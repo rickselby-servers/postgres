@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deployment
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to remote server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rickselby-web-server/actions/server-certificate@main
+        with:
+          CA: ${{ secrets.LINODE_CA }}
+          CLIENT_CERT: ${{ secrets.LINODE_CLIENT_CERT }}
+          CLIENT_KEY: ${{ secrets.LINODE_CLIENT_KEY }}
+      - uses: rickselby-web-server/actions/docker-compose-deploy@main
+        with:
+          STACK_NAME: postgres
+          KEEP_NETWORKS: postgres
+        env:
+          DOCKER_HOST: ${{ secrets.LINODE_HOST }}
+          DOCKER_TLS_VERIFY: 1
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: docker
+    directory: postgres
+    schedule:
+      interval: weekly
+      day: saturday
+      time: "08:00"
+      timezone: "Europe/London"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: saturday
+      time: "08:00"
+      timezone: "Europe/London"
